@@ -45,13 +45,12 @@ class TestGrounding(unittest.TestCase):
 
     def test_terminal_grounder(self):
         terminal = TerminalGrounder()
-        segmenter = ContourSegmenter()
-        image = ImageFile('digits1')
-        segments = segmenter.process(image.image)
-        characters = "0" * len(segments)
-        mock_input_gen = (char for char in characters)
+        characters = "0" * len(self.segments)
+        mock_input_gen = iter(characters)
         def mock_input(prompt):
             return next(mock_input_gen)
         with mock.patch('__builtin__.raw_input', mock_input):
-            terminal.ground(image, segments)
+            terminal.ground(self.img, self.segments)
+        self.assertTrue(self.img.is_grounded())
+        self.assertEquals(reconstruct_chars(self.img.ground.classes), "0"*len(self.segments))
 
